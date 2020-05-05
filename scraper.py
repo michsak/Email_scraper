@@ -21,18 +21,16 @@ def log():
 
 
 def fromwho_subject(el_1, el_2):
-    el_1 = "Subject: " + str(el_1)
-    el_2 = "From: " + str(el_2)
-    text = open("body.txt", "w")
-    text.write(el_1)
-    text.write(el_2)
-    text.close()
+    el_1 = "Subject: " + str(el_1) + "\n"
+    el_2 = "From: " + str(el_2) + "\n"
+    txt = el_1 + el_2
+    return txt
 
 
 def reading_emails():
     mail_interior = log()
     status, messages = mail_interior.select('INBOX')
-    how_many = 20
+    how_many = 10
     z = 0
     mail_nb = int(messages[0])
 
@@ -47,31 +45,40 @@ def reading_emails():
                         subject = subject.decode()
                     except UnicodeDecodeError:
                         pass
-                #fromwho_subject(subject, msg.get("From"))
+                try:
+                    if not os.path.isdir(subject):
+                        reg_expr = re.compile(r'\w+')
+                        subject = str(reg_expr.findall(subject))
+                        subject = subject.replace(",", "").replace("'", "").replace('[', "").replace(']', "")
+                        try:
+                            os.mkdir(subject)
+                        except FileExistsError:
+                            subject = subject + ' ({})'.format(str(z))
+                            z += 1
+                            os.mkdir(subject)
+                        path = os.path.join(subject, "body.txt")
+                        body_init = fromwho_subject(subject, msg.get("From"))
+                        open(path, "w").write(body_init)
+                except UnicodeDecodeError:
+                    pass
+
                 if msg.is_multipart():
                     for part in msg.walk():
                         content_type = part.get_content_type()
                         content_disposition = str(part.get("Content-Disposition"))
+                        print(part.get_payload(decode=True))
                         try:
-                            body = part.get_payload(decode=True).decode()
+                            body = part.get_payload(decode=True).decode("utf-8")    #AND HERE, ACUTALLY GET_PAYLOAD IS THE PROBLEM
                         except:
+                            print("error")
                             pass
                         if content_type == "text/plain" and "attachment" not in content_disposition:
-                            print(body)
+                            path = os.path.join(subject, "body.txt")
+                            open(path, "a", encoding='utf-8').write(body)
                         elif "attachment" in content_disposition:
                             filename = part.get_filename()
                             if filename:
                                 try:
-                                    if not os.path.isdir(subject):
-                                        reg_expr = re.compile(r'\w+')
-                                        subject = str(reg_expr.findall(subject))
-                                        subject = subject.replace(",", "").replace("'", "").replace('[', "").replace(']', "")
-                                        try:
-                                            os.mkdir(subject)
-                                        except FileExistsError:
-                                            subject = subject + ' ({})'.format(str(z))
-                                            z += 1
-                                            os.mkdir(subject)
                                     filepath = os.path.join(subject, filename)
                                 except UnicodeDecodeError:
                                     pass
@@ -81,25 +88,18 @@ def reading_emails():
                                     pass
                 else:
                     content_type = msg.get_content_type()
+                    #print(msg.get_payload(decode=True).decode("utf-8")) #here html_scraper needed!!!
                     try:
-                        body = msg.get_payload(decode=True).decode()     #here is the problem
+                        body = msg.get_payload(decode=True).decode("utf-8")
                         if content_type == "text/plain":
-                            print(body)
+                            path = os.path.join(subject, "body.txt")
+                            open(path, "a", encoding='utf-8').write(body)
                     except UnicodeDecodeError:
+                        #print("error")
                         pass
                 if content_type == "text/html":
                     try:
-                        if not os.path.isdir(subject):
-                            reg_expr = re.compile(r'\w+')
-                            subject = str(reg_expr.findall(subject))
-                            subject = subject.replace(",", "").replace("'", "").replace('[', "").replace(']', "")
-                            try:
-                                os.mkdir(subject)
-                            except FileExistsError:
-                                subject = subject + ' ({})'.format(str(z))
-                                z += 1
-                                os.mkdir(subject)
-                        filename = f"{subject[:50]}.html"
+                        filename = "network_site.html"
                         filepath = os.path.join(subject, filename)
                         try:
                             open(filepath, "w").write(body)
