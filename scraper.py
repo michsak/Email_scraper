@@ -20,6 +20,15 @@ def log():
     return imap
 
 
+def fromwho_subject(el_1, el_2):
+    el_1 = "Subject: " + str(el_1)
+    el_2 = "From: " + str(el_2)
+    text = open("body.txt", "w")
+    text.write(el_1)
+    text.write(el_2)
+    text.close()
+
+
 def reading_emails():
     mail_interior = log()
     status, messages = mail_interior.select('INBOX')
@@ -38,9 +47,7 @@ def reading_emails():
                         subject = subject.decode()
                     except UnicodeDecodeError:
                         pass
-                from_ = msg.get("From")
-                print("Subject: ", subject)
-                print("From: ", from_)
+                #fromwho_subject(subject, msg.get("From"))
                 if msg.is_multipart():
                     for part in msg.walk():
                         content_type = part.get_content_type()
