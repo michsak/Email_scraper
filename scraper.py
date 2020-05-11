@@ -3,6 +3,7 @@ import email
 from email.header import decode_header
 import os
 import re
+import traceback
 
 
 def log():
@@ -36,7 +37,7 @@ def extensions():
 def reading_emails(extension):
     mail_interior = log()
     status, messages = mail_interior.select('INBOX')
-    how_many = 10
+    how_many = 100
     z = 0
     mail_nb = int(messages[0])
 
@@ -76,8 +77,11 @@ def reading_emails(extension):
                                     open(path, "w").write(body_init)
                                 filepath = os.path.join(subject, filename)
                                 open(filepath, "wb").write(part.get_payload(decode=True))
-                            except UnicodeDecodeError:
+                            except UnicodeDecodeError as e:
                                 if a == 0:
+                                    error_file = open("error_log.txt", 'a')
+                                    error_file.write(traceback.format_exc(e))
+                                    error_file.close()
                                     print("error with opening mail {}".format(subject))
                                     a += 1
                                 pass
