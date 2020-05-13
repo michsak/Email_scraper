@@ -34,11 +34,12 @@ def extensions():
     return ext
 
 
-def reading_emails(extension):
+def reading_emails(extension, my_path):
+    os.chdir(my_path)  #wanted path
     mail_interior = log()
     status, messages = mail_interior.select('INBOX')
     how_many = 100
-    z = 0
+    z = 1
     mail_nb = int(messages[0])
 
     for i in range(mail_nb, mail_nb-how_many, -1):
@@ -90,5 +91,6 @@ def reading_emails(extension):
 
 
 if __name__ == "__main__":
+    path = "C:/Users/micha/OneDrive/Documents/Programowanie/Python"
     ext = extensions()
-    reading_emails(ext)
+    reading_emails(ext, path)
