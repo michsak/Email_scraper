@@ -1,7 +1,32 @@
 from tkinter import *
 from tkinter import filedialog
+import os
 
 
+def about_button():
+    if os.path.isfile("about.txt"):
+        path = os.path.join("about.txt")
+        os.system(path)
+    else:
+        pass
+
+
+def contact_button():
+    if os.path.isfile("contact.txt"):
+        path = os.path.join("contact.txt")
+        os.system(path)
+    else:
+        pass
+
+
+def help_button():
+    if os.path.isfile("help.txt"):
+        path = os.path.join("help.txt")
+        os.system(path)
+    else:
+        pass
+    
+    
 def click_file_but(var, text):
     var.append(text)
     for j in var:
@@ -71,9 +96,9 @@ def file_buttons(root):
 def menu(root):
     menu = Menu(root)
     root.config(menu=menu)
-    menu.add_command(label='About', command=None)
-    menu.add_command(label='Contact', command=None)
-    menu.add_command(label='Help', command=None)
+    menu.add_command(label='About', command=lambda: about_button())
+    menu.add_command(label='Contact', command=lambda: contact_button())
+    menu.add_command(label='Help', command=lambda: help_button())
 
 
 def input_text_field(root, new_list):
