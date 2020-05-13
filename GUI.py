@@ -1,8 +1,18 @@
 from tkinter import *
+from tkinter import filedialog
 
 
 def click_file_but(var, text):
     var.append(text)
+    for j in var:
+        if var.count(j) > 1:
+            var.remove(j)
+    return var
+
+
+def search_filepath(var):
+    filename = filedialog.askdirectory()
+    var.append(filename)
     return var
 
 
@@ -55,12 +65,6 @@ def file_buttons(root):
     button_11.place(x=216, y=179)
     button_12 = Button(root, text=file_format[11], activebackground=pres_col, fg=fg_color, font=font, width=width, bg=bg_color, padx=padx, pady=pady, command=lambda: [click_file_but(var, file_format[11]), pres_but(button_12)])
     button_12.place(x=269, y=179)
-    #for i in file_format:
-    #    for j in range(len(var)):
-    #        print(j)
-    #        if var.count(i) > 1:
-    #            var.remove(j)
-
     return var
 
 
@@ -72,8 +76,7 @@ def menu(root):
     menu.add_command(label='Help', command=None)
 
 
-def input_text_field(root):
-    new_list = []
+def input_text_field(root, new_list):
     bg_color = 'lavender blush'
     empty_place = Label(root, bg=bg_color)
     empty_place.place(x=0, y=0)
@@ -85,8 +88,10 @@ def input_text_field(root):
     input_1.place(x=109, y=20)
     input_2 = Entry(root, width=35, borderwidth=1, fg='black', show='*')
     input_2.place(x=109, y=41)
-    start_button = Button(root, text='START', fg='black', bg='chartreuse3', borderwidth=4, activebackground='green4', width=8, padx=4, pady=4, command=lambda: [click_logpas(new_list, input_1.get(), input_2.get()), root.quit()])
-    start_button.place(x=177, y=240)
+    start_button = Button(root, text='START', fg='black', bg='chartreuse3', borderwidth=7, activebackground='forest green', width=8, height=1, padx=5, pady=5, command=lambda: [click_logpas(new_list, input_1.get(), input_2.get()), root.quit()])
+    start_button.place(x=174, y=280)
+    browse_button = Button(root, text='Browse directory', fg='black', bg='floral white', borderwidth=4, activebackground='thistle3', width=13, padx=3, pady=3, command=lambda: search_filepath(new_list))
+    browse_button.place(x=159, y=224)
     return new_list
 
 
@@ -96,17 +101,18 @@ def graphic_interface():
     root.configure(background="lavender blush")
     root.minsize(400, 400)
     root.resizable(0, 0)
-
+    new_list = []
 
     files_formats = file_buttons(root)
     menu(root)
-    log_pass = input_text_field(root)
+    log_pass_place = input_text_field(root, new_list)
     root.mainloop()
 
-    #print(files_formats)
-    if len(log_pass) >= 2:
-        login = log_pass[0]
-        password = log_pass[1]
-        print(login, password, files_formats)
+    if len(log_pass_place) >= 3:
+        place = log_pass_place[0]
+        login = log_pass_place[1]
+        password = log_pass_place[2]
+        print(login, password, place)
+        print(files_formats)
 
 graphic_interface()
