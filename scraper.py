@@ -66,7 +66,7 @@ def reading_emails(extension, my_path, delay):
                     final_mail_nb += 1
                 except (KeyError, TypeError):
                     pass
-        if nb_days_int >= delay:
+        if nb_days_int > delay:
             break
 
     for i in range(mail_nb, mail_nb-final_mail_nb, -1):
@@ -120,6 +120,6 @@ def reading_emails(extension, my_path, delay):
 
 if __name__ == "__main__":
     path = "C:/Users/micha/OneDrive/Documents/Programowanie/Python/Email_scraper"
-    delay = 30
+    delay = 8
     ext = extensions()
     reading_emails(ext, path, delay)
