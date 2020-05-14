@@ -4,6 +4,7 @@ from email.header import decode_header
 import os
 import re
 import traceback
+import datetime
 
 
 def log():
@@ -14,7 +15,7 @@ def log():
 
     reg_exp = re.compile(r'@\w+.\w+')
     domain = reg_exp.findall(login)
-    domain = str(domain).replace('@', "").replace('[', "").replace(']', "").replace("'", "").replace("'", "")
+    domain = str(domain).replace('@', "").replace('[', "").replace(']', "").replace("'", "")
 
     imap = imaplib.IMAP4_SSL("imap.{}".format(domain))
     imap.login(login, password)
@@ -34,17 +35,44 @@ def extensions():
     return ext
 
 
-def reading_emails(extension, my_path):
-    os.chdir(my_path)  #wanted path
+def reading_emails(extension, my_path, delay):
+    os.chdir(my_path)
     mail_interior = log()
     status, messages = mail_interior.select('INBOX')
-    how_many = 100
-    z = 1
     mail_nb = int(messages[0])
+    mail_date = []
+    final_mail_nb = 0
+    z = 1
 
-    for i in range(mail_nb, mail_nb-how_many, -1):
+    for i in range(mail_nb, 0, -1):
+        res, msg = mail_interior.fetch(str(i), "(RFC822)")
+        for response in msg:
+            if isinstance(response, tuple):
+                msg = email.message_from_bytes(response[1])
+                try:
+                    today = datetime.datetime.today()
+                    today = today.strftime("%d %m %Y")
+                    today = datetime.datetime.strptime(today, '%d %m %Y')
+                    reg_exp = re.compile(r'(Date: (.*?)\d\d\d\d)')
+                    date = reg_exp.findall(str(msg))
+                    for x, y in date:
+                        mail_date.append(x)
+                        str_searched_date = str(mail_date)[-13:-2]
+                    str_searched_date = datetime.datetime.strptime(str_searched_date, '%d %b %Y')
+                    nb_days_str = str(today-str_searched_date)
+                    reg_exp_2 = re.compile(r'(\d+)')
+                    res = reg_exp_2.search(nb_days_str)
+                    nb_days_int = int(res.group())  #NUMBER OF DAYS TO LOOP
+                    final_mail_nb += 1
+                except (KeyError, TypeError):
+                    pass
+        if nb_days_int >= delay:
+            break
+
+    for i in range(mail_nb, mail_nb-final_mail_nb, -1):
         a = 0
         res, msg = mail_interior.fetch(str(i), "(RFC822)")
+
         for response in msg:
             if isinstance(response, tuple):
                 msg = email.message_from_bytes(response[1])
@@ -91,6 +119,7 @@ def reading_emails(extension, my_path):
 
 
 if __name__ == "__main__":
-    path = "C:/Users/micha/OneDrive/Documents/Programowanie/Python"
+    path = "C:/Users/micha/OneDrive/Documents/Programowanie/Python/Email_scraper"
+    delay = 30
     ext = extensions()
-    reading_emails(ext, path)
+    reading_emails(ext, path, delay)
