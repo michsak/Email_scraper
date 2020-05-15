@@ -62,6 +62,14 @@ def click_logpas(new, var_1, var_2, var_3):
     return new
 
 
+def mapping(time):
+    dict_1 = {"1 day": "1", "2 days": "2", "3 days": "3", "4 days": "4", "5 days": "5", "6 days": "6", "1 week": "7", "2 weeks": "14", "3 weeks": "21", "4 weeks": "28"}
+    for key, value in dict_1.items():
+        if time == key:
+            time = value
+    return time
+
+
 def file_buttons(root):
     var = []
     file_format = ['pdf', 'zip', 'doc', 'docx', 'jpg', 'jpeg', 'gif', 'png', 'pptx', 'xlsx', 'rar', 'avi']
@@ -111,7 +119,6 @@ def menu(root):
 
 def input_text_field(root, new_list):
     bg_color = 'lavender blush'
-    style = ttk.Style()
     empty_place = Label(root, bg=bg_color)
     empty_place.place(x=0, y=0)
     log = Label(root, text='Login', bg=bg_color)
@@ -147,13 +154,10 @@ def graphic_interface():
     log_pass_place_time = input_text_field(root, new_list)
     root.mainloop()
 
-    if len(log_pass_place_time) >= 4:
+    if (len(log_pass_place_time) >= 3 and (log_pass_place_time[0] != '' and log_pass_place_time[1] != '' and
+                                          log_pass_place_time[2] != '' and log_pass_place_time[3] != '')):
         place = log_pass_place_time[0]
         login = log_pass_place_time[1]
         password = log_pass_place_time[2]
-        per_of_time = log_pass_place_time[3]
-        print(login, password, place, per_of_time)
-        for ext in files_formats:
-            print(ext)
-
-graphic_interface()
+        per_of_time = mapping(log_pass_place_time[3])
+        return login, password, place, per_of_time, tuple(files_formats)
