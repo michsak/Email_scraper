@@ -7,16 +7,10 @@ import traceback
 import datetime
 
 
-def log():
-    print("Write down your login and password\nLogin:")
-    login = input()
-    print("Pasword:")
-    password = input()
-
+def log(login, password):
     reg_exp = re.compile(r'@\w+.\w+')
     domain = reg_exp.findall(login)
     domain = str(domain).replace('@', "").replace('[', "").replace(']', "").replace("'", "")
-
     imap = imaplib.IMAP4_SSL("imap.{}".format(domain))
     imap.login(login, password)
     return imap
@@ -29,15 +23,10 @@ def fromwho_subject(el_1, el_2):
     return txt
 
 
-def extensions():
-    print('Choose the file extension:\npdf\nzip\ntxt\nmp3')
-    ext = "." + str(input()).lower()
-    return ext
-
-
-def reading_emails(extension, my_path, delay):
+def reading_emails(ext, my_path, delay, login, pas):
+    delay = int(delay)
     os.chdir(my_path)
-    mail_interior = log()
+    mail_interior = log(login, pas)
     status, messages = mail_interior.select('INBOX')
     mail_nb = int(messages[0])
     mail_date = []
@@ -86,7 +75,7 @@ def reading_emails(extension, my_path, delay):
                     content_disposition = str(part.get("Content-Disposition"))
                     if "attachment" in content_disposition:
                         filename = part.get_filename()
-                        if filename.endswith(extension):
+                        if filename.endswith(ext):
                             try:
                                 if not os.path.isdir(subject):
                                     reg_expr = re.compile(r'\w+')
@@ -119,7 +108,12 @@ def reading_emails(extension, my_path, delay):
 
 
 if __name__ == "__main__":
-    path = "C:/Users/micha/OneDrive/Documents/Programowanie/Python/Email_scraper"
-    delay = 8
-    ext = extensions()
-    reading_emails(ext, path, delay)
+    print("Write down your login and password\n Login:")
+    login = input()
+    print("Password:")
+    password = input()
+    path = "C:/Users/micha/Downloads"   #path to demanded directory
+    print("Type from when you want to download files:")
+    nb_days = 8
+    ext = tuple(['pdf'])    #files formats as list
+    reading_emails(ext, path, nb_days, login, password)
