@@ -52,9 +52,11 @@ def reading_emails(ext, my_path, delay, login, pas):
                     reg_exp_2 = re.compile(r'(\d+)')
                     res = reg_exp_2.search(nb_days_str)
                     nb_days_int = int(res.group())  #NUMBER OF DAYS TO LOOP
+                    if nb_days_int > delay:
+                        break
                     final_mail_nb += 1
                 except (KeyError, TypeError):
-                    pass
+                    final_mail_nb += 1
         if nb_days_int > delay:
             break
 
@@ -83,7 +85,7 @@ def reading_emails(ext, my_path, delay, login, pas):
                                     subject = subject[2:-2].replace(",", "").replace(" ", "_").replace("'", "")
                                     try:
                                         os.mkdir(subject)
-                                    except FileExistsError:
+                                    except (FileExistsError, FileNotFoundError):
                                         subject = subject + ' ({})'.format(str(z))
                                         z += 1
                                         os.mkdir(subject)
