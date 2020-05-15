@@ -1,0 +1,5 @@
+Write down your login and password.
+Than choose file formats and period of time from which you want to download desired files.
+You can choose directory in which you want to save files by pressing browse directory.
+To start program press Start.
+In a few moments files downloaded from your email will be in the selected directory.

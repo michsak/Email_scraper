@@ -1,0 +1,8 @@
+Program was craeted by Michał Sakowicz in May 2020.
+
+It's purpose is to download selected file formats from users email.
+Program allows user choose directory, where user wants to save files.
+User can also choose from how many days he wants to download files.
+Login or password aren't save anywhere, it's necessary to enter the email.
+
+For any further questions contact me by mail: michalsakowicz99@gmail.com.
