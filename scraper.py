@@ -51,7 +51,7 @@ def reading_emails(ext, my_path, delay, login, pas):
                     nb_days_str = str(today-str_searched_date)
                     reg_exp_2 = re.compile(r'(\d+)')
                     res = reg_exp_2.search(nb_days_str)
-                    nb_days_int = int(res.group())  #NUMBER OF DAYS TO LOOP
+                    nb_days_int = int(res.group())
                     if nb_days_int > delay:
                         break
                     final_mail_nb += 1
