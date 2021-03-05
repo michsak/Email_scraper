@@ -1,5 +1,5 @@
-import Email_scraper.scraper as sc
-import Email_scraper.GUI as gui
+import scraper as sc
+import GUI as gui
 
 
 if __name__ == "__main__":
